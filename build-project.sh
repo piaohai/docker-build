@@ -2,7 +2,6 @@
 
 : ${KEY?'missing github private key do deploy docker run -e KEY=XXXX'}
 
-[ -n "$DEBUG" ] && echo debug on ... && set -x
 
 
 # private github key comes from env variable KEY
@@ -11,9 +10,7 @@ mkdir -p /root/.ssh
 chmod 700 /root/.ssh
 
 # switch off debug to hide private key
-set +x
 echo $KEY|base64 -d> /root/.ssh/id_rsa
-[ -n "$DEBUG" ] && echo debug on ... && set -x
 
 chmod 600 /root/.ssh/id_rsa
 
@@ -26,7 +23,7 @@ ssh -T -o StrictHostKeyChecking=no  git@github.com
 git clone -b $BRANCH $REPO /tmp/prj
 
 if [ $BUILD_ENV == 'local' ]; then
-  /tmp/prj/gradlew -Penv=$BUILD_ENV -b /tmp/prj/build.gradle clean build --refresh-dependencies --info --stacktrace
+  /tmp/prj/gradlew -Penv=$BUILD_ENV -b /tmp/prj/build.gradle $BUILD_PHASES --refresh-dependencies --info --stacktrace
 else
-  /tmp/prj/gradlew -Penv=$BUILD_ENV -b /tmp/prj/build.gradle clean build sonarRunner uploadArchives --refresh-dependencies --info --stacktrace
+  /tmp/prj/gradlew -Penv=$BUILD_ENV -b /tmp/prj/build.gradle $BUILD_PHASES uploadArchives --refresh-dependencies --info --stacktrace
 fi
