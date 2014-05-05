@@ -22,8 +22,4 @@ ssh -T -o StrictHostKeyChecking=no  git@github.com
 # e.g.: docker run -e REPO=git@github.com:sequenceiq/api.git -e BRANCH=master
 git clone -b $BRANCH $REPO /tmp/prj
 
-if [ $BUILD_ENV == 'local' ]; then
-  /tmp/prj/gradlew -Penv=$BUILD_ENV -b /tmp/prj/build.gradle $BUILD_PHASES --refresh-dependencies --info --stacktrace
-else
-  /tmp/prj/gradlew -Penv=$BUILD_ENV -b /tmp/prj/build.gradle $BUILD_PHASES uploadArchives --refresh-dependencies --info --stacktrace
-fi
+/tmp/prj/gradlew -Penv=$BUILD_ENV -b /tmp/prj/build.gradle $BUILD_TASKS --refresh-dependencies --info --stacktrace
